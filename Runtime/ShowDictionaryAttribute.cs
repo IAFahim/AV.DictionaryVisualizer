@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
 
-[HelpURL("https://github.com/IAFahim/AV.DictionaryVisualizer")]
-
 namespace AV.DictionaryVisualizer.Runtime
 {
+    [HelpURL("https://github.com/IAFahim/AV.DictionaryVisualizer")]
     public class ShowDictionaryAttribute : PropertyAttribute
     {
         public readonly string KeyFormatter;

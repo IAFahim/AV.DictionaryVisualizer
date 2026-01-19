@@ -1,9 +1,6 @@
 using UnityEditor;
 using UnityEngine;
 
-[HelpURL("https://github.com/IAFahim/AV.DictionaryVisualizer")]
-[AddComponentMenu("AV/DictionaryVisualizer/UniversalDictionaryEditor")]
-
 namespace AV.Tools.Editor
 {
     /// <summary>
@@ -12,6 +9,8 @@ namespace AV.Tools.Editor
     ///     WARNING: This overrides ALL MonoBehaviour inspectors. If you have custom editors,
     ///     add DictionaryVisualizer.DrawDebugDictionaries(target) manually to those editors instead.
     /// </summary>
+    [HelpURL("https://github.com/IAFahim/AV.DictionaryVisualizer")]
+    [AddComponentMenu("AV/DictionaryVisualizer/UniversalDictionaryEditor")]
     [CustomEditor(typeof(MonoBehaviour), true, isFallback = true)]
     public class UniversalDictionaryEditor : UnityEditor.Editor
     {
