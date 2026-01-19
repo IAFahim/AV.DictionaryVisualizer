@@ -1,0 +1,4 @@
+name: AV.DictionaryVisualizer.Runtime
+rootNamespace: AV.DictionaryVisualizer
+autoReferenced: true
+
