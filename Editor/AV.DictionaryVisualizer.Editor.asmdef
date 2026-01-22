@@ -2,7 +2,7 @@
     "name": "AV.DictionaryVisualizer.Editor",
     "rootNamespace": "AV.DictionaryVisualizer",
     "references": [
-        "GUID:8d19511f2e454db4be11bc4d78f3dbcb"
+        "GUID:2a1edd981105ab7459b4b7e0df2f08c4"
     ],
     "includePlatforms": [
         "Editor"
