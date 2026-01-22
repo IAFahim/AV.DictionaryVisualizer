@@ -19,20 +19,20 @@ namespace AV.DictionaryVisualizer.Editor
     // LAYER B: Core Logic (Stateless Analysis)
     public static class DictionaryAnalytics
     {
-        public static void Analyze(IDictionary dict, out DictionaryMetrics metrics)
+        public static void Analyze(IDictionary dictionary, out DictionaryMetrics metrics)
         {
             metrics = new DictionaryMetrics();
-            if (dict == null) return;
+            if (dictionary == null) return;
 
-            metrics.Count = dict.Count;
+            metrics.Count = dictionary.Count;
 
             // 1. Determine Types safely
-            var genericArgs = dict.GetType().GetGenericArguments();
-            if (genericArgs.Length == 2)
+            var genericArguments = dictionary.GetType().GetGenericArguments();
+            if (genericArguments.Length == 2)
             {
-                metrics.KeyType = PrettifyType(genericArgs[0]);
-                metrics.ValueType = PrettifyType(genericArgs[1]);
-                metrics.IsReferenceType = !genericArgs[1].IsValueType;
+                metrics.KeyType = PrettifyType(genericArguments[0]);
+                metrics.ValueType = PrettifyType(genericArguments[1]);
+                metrics.IsReferenceType = !genericArguments[1].IsValueType;
             }
             else
             {
@@ -44,46 +44,46 @@ namespace AV.DictionaryVisualizer.Editor
             // 2. Linear Scan for Nulls and Size Heuristic
             // Note: We avoid deep reflection here to keep the Editor responsive.
             long estimatedSize = 0;
-            var nulls = 0;
+            var nullCount = 0;
 
-            foreach (DictionaryEntry entry in dict)
+            foreach (DictionaryEntry entry in dictionary)
             {
                 if (entry.Value == null || entry.Value.Equals(null)) // Unity Object null check
-                    nulls++;
+                    nullCount++;
 
                 // Heuristic: 16 bytes overhead + key + value (roughly)
                 estimatedSize += 16;
             }
 
-            metrics.NullValues = nulls;
+            metrics.NullValues = nullCount;
             metrics.ApproxSizeBytes = estimatedSize + metrics.Count * IntPtr.Size * 2;
         }
 
-        public static void CopyJson(IDictionary dict)
+        public static void CopyJson(IDictionary dictionary)
         {
-            if (dict == null) return;
-            var sb = new StringBuilder();
-            sb.Append("{\n");
-            foreach (DictionaryEntry entry in dict)
+            if (dictionary == null) return;
+            var jsonStringBuilder = new StringBuilder();
+            jsonStringBuilder.Append("{\n");
+            foreach (DictionaryEntry entry in dictionary)
             {
-                var k = entry.Key?.ToString() ?? "null";
-                var v = entry.Value?.ToString() ?? "null";
-                sb.Append($"  \"{k}\": \"{v}\",\n");
+                var keyText = entry.Key?.ToString() ?? "null";
+                var valueText = entry.Value?.ToString() ?? "null";
+                jsonStringBuilder.Append($"  \"{keyText}\": \"{valueText}\",\n");
             }
 
-            if (dict.Count > 0) sb.Length -= 2; // remove trailing comma
-            sb.Append("\n}");
-            GUIUtility.systemCopyBuffer = sb.ToString();
-            Debug.Log($"[DictionaryVisualizer] Copied {dict.Count} entries to clipboard.");
+            if (dictionary.Count > 0) jsonStringBuilder.Length -= 2; // remove trailing comma
+            jsonStringBuilder.Append("\n}");
+            GUIUtility.systemCopyBuffer = jsonStringBuilder.ToString();
+            Debug.Log($"[DictionaryVisualizer] Copied {dictionary.Count} entries to clipboard.");
         }
 
-        private static string PrettifyType(Type t)
+        private static string PrettifyType(Type type)
         {
-            if (t == typeof(int)) return "int";
-            if (t == typeof(float)) return "float";
-            if (t == typeof(string)) return "string";
-            if (t == typeof(GameObject)) return "GameObject";
-            return t.Name;
+            if (type == typeof(int)) return "int";
+            if (type == typeof(float)) return "float";
+            if (type == typeof(string)) return "string";
+            if (type == typeof(GameObject)) return "GameObject";
+            return type.Name;
         }
 
         public static string FormatBytes(long bytes)

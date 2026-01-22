@@ -1,18 +1,18 @@
 {
-    "name": "AV.DictionaryVisualizer.Editor",
-    "rootNamespace": "AV.DictionaryVisualizer",
-    "references": [
-        "GUID:2a1edd981105ab7459b4b7e0df2f08c4"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "AV.DictionaryVisualizer.Editor",
+  "rootNamespace": "",
+  "references": [
+    "GUID:8d19511f2e454db4be11bc4d78f3dbcb"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

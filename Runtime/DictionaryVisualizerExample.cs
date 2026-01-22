@@ -3,9 +3,6 @@ using AV.DictionaryVisualizer.Runtime;
 using UnityEngine;
 using Variable.RPG;
 
-[HelpURL("https://github.com/IAFahim/AV.DictionaryVisualizer")]
-[AddComponentMenu("AV/DictionaryVisualizer/DictionaryVisualizerExample")]
-
 /// <summary>
 ///     Example demonstrating the [ShowDictionary] attribute.
 ///     Enter Play Mode to see dictionaries visualized in the Inspector.
@@ -22,9 +19,9 @@ public class DictionaryVisualizerExample : MonoBehaviour
 
     private void Start()
     {
-        var rpgStat = new RpgStat();
-        _statsDictionary[0] = rpgStat;
-        var s = rpgStat.ToStringCompact();
+        var stat = new RpgStat();
+        _statsDictionary[0] = stat;
+        var statString = stat.ToStringCompact();
         _items["Health Potion"] = 5;
         _items["Mana Potion"] = 3;
         _items["Gold"] = 9999;

@@ -1,9 +1,9 @@
 {
   "name": "com.av.dictionaryvisualizer",
   "version": "1.0.0",
-  "displayName": "AV Dictionary Visualizer",
-  "description": "Custom editor for visualizing and debugging Dictionary collections with real-time value inspection.",
-  "unity": "2021.3",
+  "displayName": "AV.DictionaryVisualizer",
+  "description": "Custom inspector drawer for visualizing Dictionary contents in Unity with formatted display",
+  "unity": "2022.3",
   "author": {
     "name": "IAFahim",
     "email": "iafahim.dev@gmail.com",
@@ -11,17 +11,13 @@
   },
   "keywords": [
     "dictionary",
+    "visualizer",
+    "inspector",
     "editor",
-    "debugging",
-    "collections"
+    "debug",
+    "visualization"
   ],
   "category": "Editor Extensions",
   "dependencies": {},
-  "samples": [],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/IAFahim/AV.DictionaryVisualizer"
-  },
-  "licensesUrl": "https://github.com/IAFahim/AV.DictionaryVisualizer/blob/main/LICENSE.md",
-  "_fingerprint": "355452d34a39078d771f78229bd17c9f05909cc8"
+  "samples": []
 }

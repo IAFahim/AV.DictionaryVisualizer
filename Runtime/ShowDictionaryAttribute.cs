@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace AV.DictionaryVisualizer.Runtime
 {
-    [HelpURL("https://github.com/IAFahim/AV.DictionaryVisualizer")]
     public class ShowDictionaryAttribute : PropertyAttribute
     {
         public readonly string KeyFormatter;

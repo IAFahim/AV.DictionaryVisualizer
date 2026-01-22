@@ -1,5 +1,3 @@
 {
-    "name": "AV.DictionaryVisualizer.Runtime",
-    "rootNamespace": "AV.DictionaryVisualizer",
-    "autoReferenced": true
+  "name": "AV.DictionaryVisualizer.Runtime"
 }

@@ -42,8 +42,8 @@ namespace AV.Tools.Editor
 
             foreach (var field in fields)
             {
-                var attr = field.GetCustomAttribute<ShowDictionaryAttribute>();
-                if (attr == null) continue;
+                var showDictionaryAttribute = field.GetCustomAttribute<ShowDictionaryAttribute>();
+                if (showDictionaryAttribute == null) continue;
 
                 if (!anyFound)
                 {
@@ -52,13 +52,13 @@ namespace AV.Tools.Editor
                     anyFound = true;
                 }
 
-                var dict = field.GetValue(target) as IDictionary;
-                var uid = $"{target.GetInstanceID()}_{field.Name}";
-                var title = string.IsNullOrEmpty(attr.Title)
+                var dictionary = field.GetValue(target) as IDictionary;
+                var uniqueId = $"{target.GetInstanceID()}_{field.Name}";
+                var title = string.IsNullOrEmpty(showDictionaryAttribute.Title)
                     ? ObjectNames.NicifyVariableName(field.Name)
-                    : attr.Title;
+                    : showDictionaryAttribute.Title;
 
-                RenderDictionary(uid, title, dict, attr, target);
+                RenderDictionary(uniqueId, title, dictionary, showDictionaryAttribute, target);
             }
         }
 
@@ -94,45 +94,45 @@ namespace AV.Tools.Editor
             };
         }
 
-        private static void RenderDictionary(string uid, string title, IDictionary dict, ShowDictionaryAttribute attr,
+        private static void RenderDictionary(string uniqueId, string title, IDictionary dictionary, ShowDictionaryAttribute showDictionaryAttribute,
             Object target)
         {
-            if (!Foldouts.ContainsKey(uid)) Foldouts[uid] = true;
-            if (!SearchTexts.ContainsKey(uid)) SearchTexts[uid] = "";
+            if (!Foldouts.ContainsKey(uniqueId)) Foldouts[uniqueId] = true;
+            if (!SearchTexts.ContainsKey(uniqueId)) SearchTexts[uniqueId] = "";
 
-            DictionaryAnalytics.Analyze(dict, out var metrics);
+            DictionaryAnalytics.Analyze(dictionary, out var metrics);
 
-            var headerRect = EditorGUILayout.GetControlRect(false, 22);
+            var headerRectangle = EditorGUILayout.GetControlRect(false, 22);
 
-            if (Event.current.type == EventType.Repaint) _boxStyle.Draw(headerRect, false, false, false, false);
+            if (Event.current.type == EventType.Repaint) _boxStyle.Draw(headerRectangle, false, false, false, false);
 
             var spacing = 6f;
 
-            var copyRect = new Rect(headerRect.xMax - 45, headerRect.y + 2, 40, 18);
+            var copyButtonRectangle = new Rect(headerRectangle.xMax - 45, headerRectangle.y + 2, 40, 18);
 
             var statsWidth = 160f;
-            var statsRect = new Rect(copyRect.x - statsWidth - spacing, headerRect.y, statsWidth, headerRect.height);
+            var statsRectangle = new Rect(copyButtonRectangle.x - statsWidth - spacing, headerRectangle.y, statsWidth, headerRectangle.height);
 
-            var foldoutRect = new Rect(headerRect.x, headerRect.y, statsRect.x - headerRect.x, headerRect.height);
+            var foldoutRectangle = new Rect(headerRectangle.x, headerRectangle.y, statsRectangle.x - headerRectangle.x, headerRectangle.height);
 
-            DrawHeaderStats(statsRect, metrics);
+            DrawHeaderStats(statsRectangle, metrics);
 
-            if (GUI.Button(copyRect, new GUIContent("Copy", "Copy JSON to Clipboard"), EditorStyles.miniButton))
-                CopyJson(dict, attr, target);
+            if (GUI.Button(copyButtonRectangle, new GUIContent("Copy", "Copy JSON to Clipboard"), EditorStyles.miniButton))
+                CopyJson(dictionary, showDictionaryAttribute, target);
 
             var label = $"{title} ({metrics.Count})";
 
             var originalColor = GUI.contentColor;
             if (metrics.NullValues > 0) GUI.contentColor = new Color(1f, 0.6f, 0.6f);
 
-            Foldouts[uid] = EditorGUI.Foldout(foldoutRect, Foldouts[uid], label, true, _headerStyle);
+            Foldouts[uniqueId] = EditorGUI.Foldout(foldoutRectangle, Foldouts[uniqueId], label, true, _headerStyle);
             GUI.contentColor = originalColor;
 
-            if (Foldouts[uid])
+            if (Foldouts[uniqueId])
             {
                 EditorGUILayout.BeginVertical(_boxStyle);
 
-                if (dict == null)
+                if (dictionary == null)
                 {
                     EditorGUILayout.HelpBox("Dictionary is null", MessageType.Error);
                 }
@@ -144,20 +144,20 @@ namespace AV.Tools.Editor
                 {
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Space(4);
-                    SearchTexts[uid] = EditorGUILayout.TextField(SearchTexts[uid],
+                    SearchTexts[uniqueId] = EditorGUILayout.TextField(SearchTexts[uniqueId],
                         GUI.skin.FindStyle("ToolbarSearchTextField") ?? EditorStyles.toolbarSearchField);
                     if (GUILayout.Button(EditorGUIUtility.IconContent("d_winbtn_graph_close_h"),
                             GUI.skin.FindStyle("ToolbarSearchCancelButton") ?? EditorStyles.toolbarButton,
                             GUILayout.Width(18)))
                     {
-                        SearchTexts[uid] = "";
+                        SearchTexts[uniqueId] = "";
                         GUI.FocusControl(null);
                     }
 
                     GUILayout.Space(4);
                     EditorGUILayout.EndHorizontal();
 
-                    RenderEntries(dict, SearchTexts[uid], attr, target);
+                    RenderEntries(dictionary, SearchTexts[uniqueId], showDictionaryAttribute, target);
                 }
 
                 EditorGUILayout.EndVertical();
@@ -166,43 +166,43 @@ namespace AV.Tools.Editor
             EditorGUILayout.Space(2);
         }
 
-        private static void DrawHeaderStats(Rect rect, DictionaryMetrics metrics)
+        private static void DrawHeaderStats(Rect rectangle, DictionaryMetrics metrics)
         {
             var iconSize = 16f;
-            var iconY = rect.y + 3;
-            var textY = rect.y + 3;
+            var iconYPosition = rectangle.y + 3;
+            var textYPosition = rectangle.y + 3;
 
             GUI.contentColor = new Color(0.7f, 0.7f, 0.7f);
-            var memIcon = EditorGUIUtility.IconContent("Profiler.Memory");
-            var memIconRect = new Rect(rect.xMax - 60, iconY, iconSize, iconSize);
-            var memTextRect = new Rect(memIconRect.x + iconSize + 2, textY, 50, iconSize);
+            var memoryIcon = EditorGUIUtility.IconContent("Profiler.Memory");
+            var memoryIconRectangle = new Rect(rectangle.xMax - 60, iconYPosition, iconSize, iconSize);
+            var memoryTextRectangle = new Rect(memoryIconRectangle.x + iconSize + 2, textYPosition, 50, iconSize);
 
-            GUI.Label(memIconRect, memIcon);
-            GUI.Label(memTextRect, DictionaryAnalytics.FormatBytes(metrics.ApproxSizeBytes), EditorStyles.miniLabel);
+            GUI.Label(memoryIconRectangle, memoryIcon);
+            GUI.Label(memoryTextRectangle, DictionaryAnalytics.FormatBytes(metrics.ApproxSizeBytes), EditorStyles.miniLabel);
 
             if (metrics.NullValues > 0)
             {
                 GUI.contentColor = new Color(1f, 0.5f, 0.5f);
-                var warnIcon = EditorGUIUtility.IconContent("console.warnicon.sml");
+                var warningIcon = EditorGUIUtility.IconContent("console.warnicon.sml");
 
-                var warnIconRect = new Rect(memIconRect.x - 75, iconY, iconSize, iconSize);
-                var warnTextRect = new Rect(warnIconRect.x + iconSize + 2, textY, 60, iconSize);
+                var warningIconRectangle = new Rect(memoryIconRectangle.x - 75, iconYPosition, iconSize, iconSize);
+                var warningTextRectangle = new Rect(warningIconRectangle.x + iconSize + 2, textYPosition, 60, iconSize);
 
-                GUI.Label(warnIconRect, warnIcon);
-                GUI.Label(warnTextRect, $"{metrics.NullValues} nulls", EditorStyles.miniBoldLabel);
+                GUI.Label(warningIconRectangle, warningIcon);
+                GUI.Label(warningTextRectangle, $"{metrics.NullValues} nulls", EditorStyles.miniBoldLabel);
             }
             else
             {
                 GUI.contentColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-                var typeRect = new Rect(rect.x, textY, rect.width - 70, iconSize);
-                var typeSig = $"{metrics.KeyType} -> {metrics.ValueType}";
-                GUI.Label(typeRect, typeSig, _valStyle);
+                var typeRectangle = new Rect(rectangle.x, textYPosition, rectangle.width - 70, iconSize);
+                var typeSignature = $"{metrics.KeyType} -> {metrics.ValueType}";
+                GUI.Label(typeRectangle, typeSignature, _valStyle);
             }
 
             GUI.contentColor = Color.white;
         }
 
-        private static void DrawStatsBar(DictionaryMetrics metrics, IDictionary dict)
+        private static void DrawStatsBar(DictionaryMetrics metrics, IDictionary dictionary)
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
 
@@ -228,84 +228,84 @@ namespace AV.Tools.Editor
 
             if (GUILayout.Button(new GUIContent("Copy", "Copy Dictionary to Clipboard as JSON"),
                     EditorStyles.toolbarButton, GUILayout.Width(40)))
-                DictionaryAnalytics.CopyJson(dict);
+                DictionaryAnalytics.CopyJson(dictionary);
 
             EditorGUILayout.EndHorizontal();
 
-            var r = EditorGUILayout.GetControlRect(false, 1);
-            EditorGUI.DrawRect(r, new Color(0, 0, 0, 0.1f));
+            var separatorRectangle = EditorGUILayout.GetControlRect(false, 1);
+            EditorGUI.DrawRect(separatorRectangle, new Color(0, 0, 0, 0.1f));
         }
 
-        private static void RenderEntries(IDictionary dict, string searchText, ShowDictionaryAttribute attr,
+        private static void RenderEntries(IDictionary dictionary, string searchText, ShowDictionaryAttribute showDictionaryAttribute,
             Object target)
         {
             var hasSearch = !string.IsNullOrEmpty(searchText);
             var searchLower = hasSearch ? searchText.ToLowerInvariant() : "";
 
-            var idx = 0;
+            var rowIndex = 0;
             var matchCount = 0;
 
-            foreach (DictionaryEntry entry in dict)
+            foreach (DictionaryEntry entry in dictionary)
             {
-                var keyText = StringifyKey(entry.Key, attr, target);
-                var valText = Stringify(entry.Value, attr, target);
+                var keyText = StringifyKey(entry.Key, showDictionaryAttribute, target);
+                var valueText = Stringify(entry.Value, showDictionaryAttribute, target);
 
                 if (hasSearch)
                 {
                     var keyMatch = keyText.ToLowerInvariant().Contains(searchLower);
-                    var valMatch = valText.ToLowerInvariant().Contains(searchLower);
-                    if (!keyMatch && !valMatch) continue;
+                    var valueMatch = valueText.ToLowerInvariant().Contains(searchLower);
+                    if (!keyMatch && !valueMatch) continue;
                 }
 
                 matchCount++;
-                var rect = EditorGUILayout.GetControlRect(false, 18);
+                var rowRectangle = EditorGUILayout.GetControlRect(false, 18);
 
-                if (idx % 2 == 0) EditorGUI.DrawRect(rect, StripedRow);
+                if (rowIndex % 2 == 0) EditorGUI.DrawRect(rowRectangle, StripedRow);
 
-                var borderRect = new Rect(rect.x, rect.yMax - 1, rect.width, 1);
-                EditorGUI.DrawRect(borderRect, BorderLine);
+                var borderRectangle = new Rect(rowRectangle.x, rowRectangle.yMax - 1, rowRectangle.width, 1);
+                EditorGUI.DrawRect(borderRectangle, BorderLine);
 
-                var split = rect.width * 0.5f;
-                var keyRect = new Rect(rect.x, rect.y, split, rect.height);
-                var valRect = new Rect(rect.x + split, rect.y, split, rect.height);
+                var keyWidth = rowRectangle.width * 0.5f;
+                var keyRectangle = new Rect(rowRectangle.x, rowRectangle.y, keyWidth, rowRectangle.height);
+                var valueRectangle = new Rect(rowRectangle.x + keyWidth, rowRectangle.y, keyWidth, rowRectangle.height);
 
-                EditorGUI.LabelField(keyRect, new GUIContent(keyText, keyText), _keyStyle);
-                EditorGUI.LabelField(valRect, new GUIContent(valText, valText), _valStyle);
+                EditorGUI.LabelField(keyRectangle, new GUIContent(keyText, keyText), _keyStyle);
+                EditorGUI.LabelField(valueRectangle, new GUIContent(valueText, valueText), _valStyle);
 
-                idx++;
+                rowIndex++;
             }
 
             if (hasSearch && matchCount == 0) EditorGUILayout.HelpBox("No matches found", MessageType.Info);
         }
 
-        private static string Stringify(object obj, ShowDictionaryAttribute attr = null, Object target = null)
+        private static string Stringify(object value, ShowDictionaryAttribute showDictionaryAttribute = null, Object target = null)
         {
-            if (obj == null) return "null";
+            if (value == null) return "null";
 
-            if (attr != null && !string.IsNullOrEmpty(attr.ValueFormatter))
+            if (showDictionaryAttribute != null && !string.IsNullOrEmpty(showDictionaryAttribute.ValueFormatter))
             {
-                var targetType = obj.GetType();
-                var sourceType = attr.ValueFormatterType ?? targetType;
-                var cacheKey = (sourceType, attr.ValueFormatter);
+                var valueType = value.GetType();
+                var formatterSourceType = showDictionaryAttribute.ValueFormatterType ?? valueType;
+                var cacheKey = (formatterSourceType, showDictionaryAttribute.ValueFormatter);
 
-                if (!_formatterCache.TryGetValue(cacheKey, out var method))
+                if (!_formatterCache.TryGetValue(cacheKey, out var formatterMethod))
                 {
-                    if (attr.ValueFormatterType != null)
-                        method = sourceType.GetMethod(attr.ValueFormatter,
+                    if (showDictionaryAttribute.ValueFormatterType != null)
+                        formatterMethod = formatterSourceType.GetMethod(showDictionaryAttribute.ValueFormatter,
                             BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                     else
-                        method = sourceType.GetMethod(attr.ValueFormatter,
+                        formatterMethod = formatterSourceType.GetMethod(showDictionaryAttribute.ValueFormatter,
                             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-                    _formatterCache[cacheKey] = method;
+                    _formatterCache[cacheKey] = formatterMethod;
                 }
 
-                if (method != null)
+                if (formatterMethod != null)
                     try
                     {
-                        if (method.IsStatic) return (string)method.Invoke(null, new[] { obj });
+                        if (formatterMethod.IsStatic) return (string)formatterMethod.Invoke(null, new[] { value });
 
-                        return (string)method.Invoke(obj, null);
+                        return (string)formatterMethod.Invoke(value, null);
                     }
                     catch
                     {
@@ -313,38 +313,38 @@ namespace AV.Tools.Editor
                     }
             }
 
-            if (obj is Object unityObj) return unityObj ? unityObj.name : "null";
-            if (obj is string str) return str;
-            return obj.ToString();
+            if (value is Object unityObject) return unityObject ? unityObject.name : "null";
+            if (value is string stringValue) return stringValue;
+            return value.ToString();
         }
 
-        private static string StringifyKey(object obj, ShowDictionaryAttribute attr = null, Object target = null)
+        private static string StringifyKey(object key, ShowDictionaryAttribute showDictionaryAttribute = null, Object target = null)
         {
-            if (obj == null) return "null";
+            if (key == null) return "null";
 
-            if (attr != null && !string.IsNullOrEmpty(attr.KeyFormatter))
+            if (showDictionaryAttribute != null && !string.IsNullOrEmpty(showDictionaryAttribute.KeyFormatter))
             {
-                var sourceType = attr.KeyFormatterType ?? target?.GetType();
-                var cacheKey = (sourceType, attr.KeyFormatter);
+                var formatterSourceType = showDictionaryAttribute.KeyFormatterType ?? target?.GetType();
+                var cacheKey = (formatterSourceType, showDictionaryAttribute.KeyFormatter);
 
-                if (!_formatterCache.TryGetValue(cacheKey, out var method))
+                if (!_formatterCache.TryGetValue(cacheKey, out var formatterMethod))
                 {
-                    if (attr.KeyFormatterType != null)
-                        method = sourceType.GetMethod(attr.KeyFormatter,
+                    if (showDictionaryAttribute.KeyFormatterType != null)
+                        formatterMethod = formatterSourceType.GetMethod(showDictionaryAttribute.KeyFormatter,
                             BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                     else if (target != null)
-                        method = sourceType.GetMethod(attr.KeyFormatter,
+                        formatterMethod = formatterSourceType.GetMethod(showDictionaryAttribute.KeyFormatter,
                             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-                    _formatterCache[cacheKey] = method;
+                    _formatterCache[cacheKey] = formatterMethod;
                 }
 
-                if (method != null)
+                if (formatterMethod != null)
                     try
                     {
-                        if (method.IsStatic) return (string)method.Invoke(null, new[] { obj });
+                        if (formatterMethod.IsStatic) return (string)formatterMethod.Invoke(null, new[] { key });
 
-                        if (target != null) return (string)method.Invoke(target, new[] { obj });
+                        if (target != null) return (string)formatterMethod.Invoke(target, new[] { key });
                     }
                     catch
                     {
@@ -352,27 +352,27 @@ namespace AV.Tools.Editor
                     }
             }
 
-            if (obj is Object unityObj) return unityObj ? unityObj.name : "null";
-            if (obj is string str) return str;
-            return obj.ToString();
+            if (key is Object unityObject) return unityObject ? unityObject.name : "null";
+            if (key is string keyValue) return keyValue;
+            return key.ToString();
         }
 
-        private static void CopyJson(IDictionary dict, ShowDictionaryAttribute attr, Object target)
+        private static void CopyJson(IDictionary dictionary, ShowDictionaryAttribute showDictionaryAttribute, Object target)
         {
-            if (dict == null) return;
-            var sb = new StringBuilder();
-            sb.Append("{\n");
-            foreach (DictionaryEntry entry in dict)
+            if (dictionary == null) return;
+            var jsonStringBuilder = new StringBuilder();
+            jsonStringBuilder.Append("{\n");
+            foreach (DictionaryEntry entry in dictionary)
             {
-                var k = StringifyKey(entry.Key, attr, target);
-                var v = Stringify(entry.Value, attr, target);
-                sb.Append($"  \"{k}\": \"{v}\",\n");
+                var keyText = StringifyKey(entry.Key, showDictionaryAttribute, target);
+                var valueText = Stringify(entry.Value, showDictionaryAttribute, target);
+                jsonStringBuilder.Append($"  \"{keyText}\": \"{valueText}\",\n");
             }
 
-            if (dict.Count > 0) sb.Length -= 2; // remove trailing comma
-            sb.Append("\n}");
-            GUIUtility.systemCopyBuffer = sb.ToString();
-            Debug.Log($"[DictionaryVisualizer] Copied {dict.Count} entries to clipboard.");
+            if (dictionary.Count > 0) jsonStringBuilder.Length -= 2; // remove trailing comma
+            jsonStringBuilder.Append("\n}");
+            GUIUtility.systemCopyBuffer = jsonStringBuilder.ToString();
+            Debug.Log($"[DictionaryVisualizer] Copied {dictionary.Count} entries to clipboard.");
         }
     }
 }
