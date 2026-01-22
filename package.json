@@ -1,0 +1,23 @@
+{
+  "name": "com.av.dictionaryvisualizer",
+  "version": "1.0.0",
+  "displayName": "AV.DictionaryVisualizer",
+  "description": "Custom inspector drawer for visualizing Dictionary contents in Unity with formatted display",
+  "unity": "2022.3",
+  "author": {
+    "name": "IAFahim",
+    "email": "iafahim.dev@gmail.com",
+    "url": "https://github.com/IAFahim"
+  },
+  "keywords": [
+    "dictionary",
+    "visualizer",
+    "inspector",
+    "editor",
+    "debug",
+    "visualization"
+  ],
+  "category": "Editor Extensions",
+  "dependencies": {},
+  "samples": []
+}
