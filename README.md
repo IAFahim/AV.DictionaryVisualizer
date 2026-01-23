@@ -1,173 +1,37 @@
 # AV.DictionaryVisualizer
 
-**Universal Dictionary Inspector for Unity**  
-View any `Dictionary<TKey, TValue>` in the Inspector during Play Mode without writing custom editors.
+![Header](documentation_header.svg)
 
----
+[![Unity](https://img.shields.io/badge/Unity-2022.3%2B-000000.svg?style=flat-square&logo=unity)](https://unity.com)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE.md)
 
-## Features
+Inspector drawer for visualizing Dictionary contents in Unity.
 
-✅ **Zero boilerplate** — Just add `[ShowDictionary]` to any dictionary field  
-✅ **Works with ANY types** — `<string, int>`, `<GameObject, float>`, etc.  
-✅ **Real-time updates** — See changes instantly during Play Mode  
-✅ **Compact design** — Clean, professional styling like RpgStats  
-✅ **Automatic integration** — Works on all MonoBehaviours automatically  
+## ✨ Features
 
----
+- **Read-Only Visualization**: Inspect dictionary keys and values in Play Mode.
+- **Formatted Display**: Clean table-like layout for dictionary entries.
+- **Universal Support**: Works with `Dictionary<TKey, TValue>` for supported serializable types.
 
-## Quick Start
+## 📦 Installation
 
-### 1. Mark Your Dictionary
+Install via Unity Package Manager (git URL).
 
-```csharp
-using AV.Tools;
-using System.Collections.Generic;
-using UnityEngine;
+### Dependencies
+- **Variable.RPG** (NuGet - Required for samples only)
 
-public class Inventory : MonoBehaviour
-{
-    [ShowDictionary("Backpack Items")]
-    private Dictionary<string, int> _items = new();
-    
-    private void Start()
-    {
-        _items["Potion"] = 5;
-        _items["Gold"] = 9999;
-    }
-}
-```
+## 🚀 Usage
 
-### 2. Enter Play Mode
-
-The Inspector will show:
-
-```
-Dictionary Inspector
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
-▼ Backpack Items (2)
-  ┌────────────┬──────────┐
-  │ Potion     │        5 │
-  ├────────────┼──────────┤
-  │ Gold       │     9999 │
-  └────────────┴──────────┘
-```
-
----
-
-## Advanced Usage
-
-### Custom Editor Integration
-
-If you already have a custom editor, manually add one line:
+Add the `[ShowDictionary]` attribute to your dictionary field.
 
 ```csharp
-using AV.Tools.Editor;
-using UnityEditor;
+using AV.DictionaryVisualizer.Runtime;
 
-[CustomEditor(typeof(MyScript))]
-public class MyScriptEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        // Call this to render all dictionaries marked with [ShowDictionary] attribute
-        DictionaryVisualizer.DrawDebugDictionaries(target); // ← Add this
-    }
-}
+[ShowDictionary]
+public Dictionary<string, int> inventory;
 ```
 
-### Title Customization
+## ⚠️ Status
 
-```csharp
-[ShowDictionary("Player Stats")]     // Custom title
-private Dictionary<string, float> _stats;
-
-[ShowDictionary]                     // Auto-generated title
-private Dictionary<int, string> _ids;
-```
-
-### Supported Types
-
-- **Primitives**: `int`, `float`, `string`, `bool`
-- **Unity Objects**: `GameObject`, `Transform`, `ScriptableObject`
-- **Custom Types**: Any type with a meaningful `ToString()`
-
----
-
-## Architecture
-
-### Files
-
-```
-AV.DictionaryVisualizer/
-├── Runtime/
-│   ├── ShowDictionaryAttribute.cs      ← The attribute
-│   ├── DictionaryVisualizerExample.cs  ← Example script
-│   └── AV.DictionaryVisualizer.Runtime.asmdef
-└── Editor/
-    ├── DictionaryVisualizer.cs         ← Core rendering logic
-    ├── UniversalDictionaryEditor.cs    ← Auto-integration
-    └── AV.DictionaryVisualizer.Editor.asmdef
-```
-
-### How It Works
-
-1. **`[ShowDictionary]` attribute** marks dictionary fields for visualization
-2. **`UniversalDictionaryEditor`** automatically hooks into all MonoBehaviour inspectors
-3. **Reflection** finds marked dictionaries at runtime (Play Mode only)
-4. **`DictionaryVisualizer`** renders dictionary contents using `EditorGUILayout` with professional styling
-5. **`DictionaryAnalytics`** analyzes dictionary metrics (count, nulls, memory usage) for display
-
----
-
-## Performance
-
-- **No overhead** in builds (Editor-only code)
-- **Reflection runs once per frame** per object (negligible)
-- **Safe** — Only active during Play Mode in Editor
-
----
-
-## Limitations
-
-⚠️ **Play Mode Only** — Reflection requires runtime instances  
-⚠️ **Read-Only** — Values cannot be edited (by design for safety)  
-⚠️ **Editor-Only** — Not serialized, won't persist after Play Mode  
-
----
-
-## Comparison to Alternatives
-
-| Approach | Boilerplate | Type-Safe | Auto-Updates |
-|----------|-------------|-----------|--------------|
-| `[ShowDictionary]` | ✅ None | ✅ Yes | ✅ Yes |
-| Custom PropertyDrawer | ❌ High | ✅ Yes | ❌ No |
-| Custom Editor | ❌ Medium | ✅ Yes | ⚠️ Manual |
-| Serialized Dictionary | ❌ Very High | ⚠️ Limited | ✅ Yes |
-
----
-
-## Troubleshooting
-
-### "Dictionary Not Showing"
-✅ Enter Play Mode (Reflection requires runtime)
-✅ Check attribute: `[ShowDictionary]`
-✅ Verify namespace: `using AV.Tools;`
-
-### "Conflicts with Custom Editor"
-✅ Add `DictionaryVisualizer.DrawDebugDictionaries(target)` manually
-✅ Or remove `UniversalDictionaryEditor.cs` and integrate directly
-
-### "Naming Conventions"
-This package follows strict naming guidelines from AGENTS.md:
-- ✅ Full words: `dictionary` (not `dict`), `attribute` (not `attr`)
-- ✅ Pronounceable: `valueRectangle` (not `valRect`)
-- ✅ Searchable: `formatterMethod` (not `method` in ambiguous contexts)
-- ✅ Clear intent: `rowIndex` (not `idx` or `i`)
-
----
-
-## Credits
-
-Built with the same architecture as **AV.RpgStats** for visual consistency.  
-Created by IAFahim, 2026.
+- 🧪 **Tests**: Missing.
+- 📘 **Samples**: None.

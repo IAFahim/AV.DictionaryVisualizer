@@ -53,7 +53,7 @@ namespace AV.Tools.Editor
                 }
 
                 var dictionary = field.GetValue(target) as IDictionary;
-                var uniqueId = $"{target.GetInstanceID()}_{field.Name}";
+                var uniqueId = $"{target.GetEntityId()}_{field.Name}";
                 var title = string.IsNullOrEmpty(showDictionaryAttribute.Title)
                     ? ObjectNames.NicifyVariableName(field.Name)
                     : showDictionaryAttribute.Title;
